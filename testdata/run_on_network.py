@@ -42,11 +42,12 @@ def task_function(input_addrs, time_limit, result_dir_path):
     target_token_addr = input_addrs['target']
     base_token_addr = input_addrs['base']
     pair_addr = input_addrs['pair']
-    rpc_endpoint = BSC_RPC_ENDPOINT
     if input_addrs['chain']  == 'eth':
         rpc_endpoint = MAINNET_RPC_ENDPOINT
-    block_number = int(input_addrs['blocknum']) # use -1 for blocksec
-    # block_number = 25543755
+    else:
+        rpc_endpoint = BSC_RPC_ENDPOINT
+    block_number = int(input_addrs['blocknum'])-1 # one block before exploit
+    # block_number = 25543755 # block number for synthetic dataset experiment
     logging.info(f"trying to generate exploit for {target_token_addr}, {base_token_addr}, {pair_addr}...")
     command = f"timeout {int(time_limit)+2} forge cage test {target_token_addr} {base_token_addr} {pair_addr} -f {rpc_endpoint} --fork-block-number {block_number} > {result_dir_path}/{target_token_addr}.result"
     try:
